@@ -65,6 +65,10 @@ dependencies {
     // Dependency Inject works with compose
     implementation(libs.androidx.hilt.navigation.compose)
 
+    // Retrofit
+    implementation(libs.retrofit)
+    implementation(libs.retrofit2.converter.gson)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
