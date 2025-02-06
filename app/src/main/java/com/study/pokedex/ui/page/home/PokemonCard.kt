@@ -1,5 +1,6 @@
 package com.study.pokedex.ui.page.home
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -33,10 +34,16 @@ fun PokemonCard(
     modifier: Modifier = Modifier,
     highlightColor: Color = Color(0x42FFFFFF)
 ) {
-    Box(modifier = modifier
-        .size(150.dp)
-        .clip(RoundedCornerShape(30.dp))
-        .background(Color(pokemon.color))
+
+    Log.i(
+        "TEST123",
+        "Pokemon: ${pokemon.name}, color: ${pokemon.color}"
+    )
+    Box(
+        modifier = modifier
+            .size(150.dp)
+            .clip(RoundedCornerShape(30.dp))
+            .background(Color(pokemon.color))
     ) {
         Image(
             painter = painterResource(R.drawable.ic_pokeball_line),
@@ -63,15 +70,16 @@ fun PokemonCard(
             LazyColumn(
                 contentPadding = PaddingValues(top = 5.dp, start = 5.dp)
             ) {
-                items(pokemon.types) { type ->
-                    Box(modifier = Modifier
-                        .padding(0.dp, 3.dp)
-                        .clip(RoundedCornerShape(30.dp))
-                        .background(highlightColor)
+                items(pokemon.types) { types ->
+                    Box(
+                        modifier = Modifier
+                            .padding(0.dp, 3.dp)
+                            .clip(RoundedCornerShape(30.dp))
+                            .background(highlightColor)
                     ) {
                         Text(
                             modifier = Modifier.padding(10.dp, 4.dp),
-                            text = type,
+                            text = types.type.name,
                             style = TextStyle(
                                 color = Color.White,
                                 fontSize = 14.sp
@@ -83,7 +91,7 @@ fun PokemonCard(
         }
 
         AsyncImage(
-            model = pokemon.sprite,
+            model = pokemon.sprites.back_shiny,
             contentDescription = "",
             contentScale = ContentScale.FillHeight,
             modifier = Modifier

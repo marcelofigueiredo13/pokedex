@@ -1,34 +1,41 @@
 package com.study.pokedex.ui.page.home
 
-import androidx.lifecycle.LiveData
+import android.util.Log
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.map
-import com.study.pokedex.data.PokemonDetail
-import com.study.pokedex.data.PokemonRepository
+import androidx.lifecycle.viewModelScope
+import com.study.pokedex.data.network.PokemonApi
+import com.study.pokedex.data.repository.PokemonRepository
+import com.study.pokedex.ui.page.home.mapper.mapToUiModel
 import com.study.pokedex.ui.page.home.model.PokemonItemDetail
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     pokemonRepository: PokemonRepository
-): ViewModel() {
-    val pokemons: LiveData<List<PokemonItemDetail>> = pokemonRepository.getPokemonList()
-        .map { list -> list.map { toPokemonItemDetail(it) }
+) : ViewModel() {
+    val pokemons: MutableLiveData<List<PokemonItemDetail>> = pokemonRepository.getPokemonList()
+
+    init {
+        fillPokemonsList()
     }
 
-    private val typeToColorMap = mapOf(
-        "glass" to 0xFF49d0b0,
-        "fire" to 0xffff6666,
-        "water" to 0xff66ccff,
-        "electric" to 0xffffd164,
-        "bug" to 0xFF49d0b0
-    )
-
-    private fun toPokemonItemDetail(value: PokemonDetail) = PokemonItemDetail(
-        value.name,
-        value.types,
-        value.sprite,
-        typeToColorMap[value.types.first()] ?: 0
-    )
+    // TODO - API call should be filling the repository
+    private fun fillPokemonsList() {
+        viewModelScope.launch {
+            val listOfPokemonUrls = PokemonApi.retrofitService.getPokemons()
+            var listOfPokemonDetails = mutableListOf<PokemonItemDetail>()
+            Log.i("TEST123", "List of pokemons: $listOfPokemonUrls")
+            listOfPokemonUrls.pokemons.forEach { pokemon ->
+                Log.i("TEST123", "Pokemon: ${pokemon.name}, Url: ${pokemon.url}")
+                val pokemonData = PokemonApi.retrofitService.getPokemonData(pokemon.name)
+                Log.i("TEST123", "Pokemon details: $pokemonData")
+                listOfPokemonDetails.add(pokemonData.mapToUiModel())
+            }
+            Log.i("TEST123", "Setting the ui with: $listOfPokemonDetails")
+            pokemons.postValue(listOfPokemonDetails)
+        }
+    }
 }

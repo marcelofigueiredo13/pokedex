@@ -33,14 +33,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.study.pokedex.R
 import com.study.pokedex.ui.page.home.model.PokemonItemDetail
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomePage(viewModel: HomeViewModel = hiltViewModel<HomeViewModel>()) {
-    Scaffold (
+    Scaffold(
         topBar = {
             TopAppBar(
                 colors = topAppBarColors(
@@ -104,7 +103,7 @@ private fun PokemonVerticalGrid(
         items(pokemonList) { pokemon ->
             PokemonCard(
                 pokemon,
-                Modifier.padding(5.dp)
+                Modifier.padding(5.dp),
             )
         }
     }
@@ -120,7 +119,8 @@ private fun EmptyContent(
     modifier: Modifier = Modifier
 ) {
     Column(
-        modifier = modifier.fillMaxSize()
+        modifier = modifier
+            .fillMaxSize()
             .wrapContentSize(Alignment.Center)
 
     ) {
